@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package kafka.practice;
+
+option go_package = "github.com/0xRichardL/kafka-practice/pkg/schemas";
+
+message FraudAlert {
+  string alert_id = 1;
+  string transaction_id = 2;
+  string reason = 3;
+  double risk_score = 4;
+  int64 created_at = 5;
+}

@@ -1,0 +1,2 @@
+./schemas/update-schema.sh ./schemas/transaction.proto transactions-value PROTOBUF http://localhost:8081
+./schemas/update-schema.sh ./schemas/fraud_alert.proto transactions-value PROTOBUF http://localhost:8081

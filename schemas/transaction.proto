@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package kafka.practice;
+
+option go_package = "github.com/0xRichardL/kafka-practice/pkg/schemas";
+
+message Transaction {
+  string transaction_id = 1;
+  string user_id = 2;
+  double amount = 3;
+  string merchant = 4;
+  string category = 5;
+  int64 timestamp = 6;
+  string status = 7;
+}
