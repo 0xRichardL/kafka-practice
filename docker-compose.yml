@@ -82,5 +82,5 @@ services:
     build:
       context: ./producer
     environment:
-      SCHEMA_REGISTRY_URL: "schema-registry:8081"
+      SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       KAFKA_BROKERS: "kafka:9092"

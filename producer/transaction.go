@@ -25,8 +25,7 @@ func NewTxProducer(brokers string, serializer *protobuf.Serializer) (*Transactio
 		"bootstrap.servers":  brokers,
 		"enable.idempotence": true,
 		"compression.codec":  "snappy",
-		"security.protocol":  "SASL_SSL",
-		"sasl.mechanisms":    "PLAIN",
+		"security.protocol":  "PLAINTEXT",
 		"acks":               "all",
 	})
 	if err != nil {
@@ -52,6 +51,7 @@ func NewTxProducer(brokers string, serializer *protobuf.Serializer) (*Transactio
 		kafkaProducer: producer,
 		kafkaTopic:    "transactions.raw",
 		serializer:    serializer,
+		mu:            &sync.Mutex{},
 	}, nil
 }
 
@@ -88,7 +88,6 @@ func (s *TransactionService) Transfer() error {
 	err = s.kafkaProducer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &s.kafkaTopic, Partition: kafka.PartitionAny},
 		Value:          payload,
-		Headers:        []kafka.Header{{Key: "Test", Value: []byte("Test the header")}},
 	}, nil)
 	if err != nil {
 		return fmt.Errorf("failed to produce: %w", err)

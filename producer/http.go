@@ -25,7 +25,7 @@ func (c *Controller) GenerateTransfers(ctx *gin.Context) {
 		Control bool `json:"control"`
 	}
 	body := Body{}
-	if err := ctx.ShouldBindJSON(body); err != nil {
+	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

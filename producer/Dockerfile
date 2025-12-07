@@ -1,17 +1,17 @@
-FROM golang:1.25.5-alpine as builder
+FROM golang:1.25.5 as builder
 
-WORKDIR /app/producer
+WORKDIR /app
 
 COPY . .
 
-RUN go build -o main 
+RUN go build -o main .
 
 FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=builder /app/main .
+RUN apk add --no-cache libc6-compat
 
-EXPOSE 5001
+COPY --from=builder /app/main .
 
 CMD ["./main"]
