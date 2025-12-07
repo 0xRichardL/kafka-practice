@@ -1,8 +1,9 @@
 module github.com/0xRichardL/kafka-practice/producer
 
-go 1.25.1
+go 1.25.4
 
 require (
+	github.com/0xRichardL/kafka-practice/schemas v0.0.0-20251207093722-b68b41f0d18f
 	github.com/confluentinc/confluent-kafka-go/v2 v2.12.0
 	github.com/gin-gonic/gin v1.11.0
 )
