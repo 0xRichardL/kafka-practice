@@ -28,8 +28,8 @@ func main() {
 	router := gin.Default()
 	controller := NewController(txProducer)
 	controller.RegisterRoutes(router)
-	log.Println("Starting Fraud server on port 8080")
-	if err := router.Run(":8080"); err != nil {
+	log.Println("Starting Fraud server on port 5001")
+	if err := router.Run(":5001"); err != nil {
 		log.Fatalln("Unable to start Fraud server", err)
 	}
 }

@@ -1,0 +1,1 @@
+mmdc -i docs/concept.mmd -o docs/concept.svg

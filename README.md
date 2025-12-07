@@ -3,6 +3,8 @@
 ## 1. 📦 Environment & Infra Setup
 
 - [x] Install Docker & Docker Compose
+- [x] Install Go
+- [x] Install Node.js
 - [x] Create project root folder
 - [x] Add docker-compose.yml containing:
   - [x] Kafka (KRaft mode)

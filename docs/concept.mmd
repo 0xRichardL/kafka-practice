@@ -1,0 +1,40 @@
+---
+config:
+  layout: dagre
+---
+flowchart TB
+ subgraph Producer["🟦 Transaction Producer"]
+        P1["Transaction Generator (Golang)"]
+  end
+ subgraph Kafka["🟥 Kafka Cluster"]
+        T1[("transactions.raw Topic")]
+        T2[("fraud.alerts Topic")]
+        T3[("transactions.store Changelog")]
+  end
+ subgraph Streams["🟧 Kafka Streams — Fraud Detection Engine"]
+        S1["Windowed Aggregations (velocity rule)"]
+        S2["State Stores (rolling avg, last location)"]
+        S3["Multi-rule Engine (spike, country, MCC, impossible travel)"]
+  end
+ subgraph AlertService["🟨 Alert Service"]
+        A1["fraud.alerts Consumer"]
+        A2["REST API / Websocket (NestJS/Node)"]
+  end
+ subgraph Connect["🟪 Kafka Connect Sinks"]
+        C1["JDBC Sink → PostgreSQL"]
+        C2["Elastic Sink → Elasticsearch"]
+  end
+ subgraph Dashboard["🟩 Fraud Monitoring UI"]
+        D1["Web Dashboard (React/Vue)"]
+  end
+
+%% arrows
+P1 --> T1
+T1 --> S1 & C1 & C2
+S1 --> S2
+S2 --> S3
+S3 --> T2
+T2 --> A1
+A1 --> A2
+A2 --> D1
+S2 --- T3
