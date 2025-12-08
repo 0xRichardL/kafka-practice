@@ -27,6 +27,11 @@ func NewTxProducer(brokers string, serializer *protobuf.Serializer) (*Transactio
 		"compression.codec":  "snappy",
 		"security.protocol":  "PLAINTEXT",
 		"acks":               "all",
+		// Retry configurations
+		// Ordering is preserved when enable.idempotence = true
+		"retries":              5,
+		"retry.backoff.ms":     200,
+		"retry.backoff.max.ms": 10000,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create producer: %w", err)

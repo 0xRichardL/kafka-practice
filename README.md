@@ -13,9 +13,9 @@
   - [x] Kafka Connect
   - [x] Kafka UI / Conduktor
   - [ ] Postgres / Elasticsearch
-- [ ] Confirm topics can be created
-- [ ] Check Kafka UI connectivity
-- [ ] Verify Schema Registry is reachable (/subjects endpoint)
+- [x] Confirm topics can be created
+- [x] Check Kafka UI connectivity
+- [x] Verify Schema Registry is reachable (/subjects endpoint)
 
 ## 2. 📚 Define Message Schemas
 
@@ -29,17 +29,17 @@
 
 - [x] Create `/producer` folder
 - [x] Add config env: broker URL, schema-registry URL
-- [ ] Integrate Avro/Protobuf serializer
-- [ ] Auto-register schema on startup
-- [ ] Produce random or API-driven transaction events
-- [ ] Add retry + backoff for production failures
+- [x] Integrate Avro/Protobuf serializer
+- [x] Auto-register schema on startup
+- [x] Produce random or API-driven transaction events
+- [x] Add retry + backoff for production failures
 - [ ] Add structured logs
-- [ ] Add Dockerfile
-- [ ] Validate messages appear in Kafka
+- [x] Add Dockerfile
+- [x] Validate messages appear in Kafka
 
-## 4. Fraud Detection Processor (Kafka Streams)
+## 4. Fraud Detection Processor (Kafka Streams - Java)
 
-- [ ] Create /services/fraud-detector folder
+- [ ] Create /fraud folder
 - [ ] Implement Streams topology:
   - [ ] Ingest `transactions` topic
   - [ ] Use state store (RocksDB)
