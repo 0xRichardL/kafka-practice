@@ -87,10 +87,6 @@ State is rebuilt automatically during replay.
 - Schema Registry (Protobuf)
 - Go 1.21+
 
-### Run
-
-go run cmd/consumer/main.go
-
 ## Configuration
 
 Key settings:

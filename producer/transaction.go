@@ -49,8 +49,12 @@ func (s *TransactionService) Transfer() error {
 	}
 
 	err = s.kafkaService.Producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &s.kafkaTopic, Partition: kafka.PartitionAny},
-		Value:          payload,
+		TopicPartition: kafka.TopicPartition{
+			Topic:     &s.kafkaTopic,
+			Partition: kafka.PartitionAny, // let Kafka decide the partition by key
+		},
+		Key:   []byte(tx.UserId), // partition by UserId
+		Value: payload,
 	}, nil)
 	if err != nil {
 		return fmt.Errorf("failed to produce: %w", err)
