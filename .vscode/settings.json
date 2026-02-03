@@ -1,6 +1,17 @@
 {
   "cSpell.words": [
+    "appengine",
+    "bufbuild",
+    "bytedance",
+    "cloudwego",
+    "confluentinc",
+    "genproto",
+    "gonic",
+    "jhump",
     "protoc",
-    "schemaregistry"
+    "protocompile",
+    "protoreflect",
+    "schemaregistry",
+    "serde"
   ]
 }

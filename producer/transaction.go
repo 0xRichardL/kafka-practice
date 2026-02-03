@@ -8,64 +8,22 @@ import (
 
 	"github.com/0xRichardL/kafka-practice/schemas"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde/protobuf"
 )
 
 type TransactionService struct {
-	kafkaProducer *kafka.Producer
-	kafkaTopic    string
-	serializer    *protobuf.Serializer
-	control       bool
-	mu            *sync.Mutex
-	currentTxID   int
+	kafkaService *KafkaService
+	kafkaTopic   string
+	control      bool
+	mu           *sync.Mutex
+	currentTxID  int
 }
 
-func NewTxProducer(brokers string, serializer *protobuf.Serializer) (*TransactionService, error) {
-	producer, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers":  brokers,
-		"enable.idempotence": true,
-		"compression.codec":  "snappy",
-		"security.protocol":  "PLAINTEXT",
-		"acks":               "all",
-		// Retry configurations
-		// Ordering is preserved when enable.idempotence = true
-		"retries":              5,
-		"retry.backoff.ms":     200,
-		"retry.backoff.max.ms": 10000,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create producer: %w", err)
-	}
-
-	// This is for handle async/background events which not being wait by the emitter (no delivery channel passed).
-	go func() {
-		for e := range producer.Events() {
-			switch ev := e.(type) {
-			case *kafka.Message:
-				if ev.TopicPartition.Error != nil {
-					fmt.Printf("Failed to deliver message: %v\n", ev.TopicPartition)
-				} else {
-					fmt.Printf("Produced event to topic %s: key = %-10s value = %s\n",
-						*ev.TopicPartition.Topic, string(ev.Key), string(ev.Value))
-				}
-			}
-		}
-	}()
-
+func NewTransactionService(kafkaService *KafkaService) *TransactionService {
 	return &TransactionService{
-		kafkaProducer: producer,
-		kafkaTopic:    "transactions.raw",
-		serializer:    serializer,
-		mu:            &sync.Mutex{},
-	}, nil
-}
-
-func (s *TransactionService) Close() {
-	if s.kafkaProducer == nil {
-		return
+		kafkaService: kafkaService,
+		kafkaTopic:   "transactions.raw",
+		mu:           &sync.Mutex{},
 	}
-	s.kafkaProducer.Flush(15 * 1000) // 15s
-	s.kafkaProducer.Close()
 }
 
 func (s *TransactionService) genTxID() string {
@@ -85,12 +43,12 @@ func (s *TransactionService) Transfer() error {
 		Timestamp:     time.Now().Unix(),
 		Status:        "initialized",
 	}
-	payload, err := s.serializer.Serialize(s.kafkaTopic, &tx)
+	payload, err := s.kafkaService.Serializer.Serialize(s.kafkaTopic, &tx)
 	if err != nil {
 		return fmt.Errorf("failed to serialize: %w", err)
 	}
 
-	err = s.kafkaProducer.Produce(&kafka.Message{
+	err = s.kafkaService.Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &s.kafkaTopic, Partition: kafka.PartitionAny},
 		Value:          payload,
 	}, nil)

@@ -3,8 +3,8 @@ module github.com/0xRichardL/kafka-practice/producer
 go 1.25.4
 
 require (
-	github.com/0xRichardL/kafka-practice/schemas v0.0.0-20251207093722-b68b41f0d18f
-	github.com/confluentinc/confluent-kafka-go/v2 v2.12.0
+	github.com/0xRichardL/kafka-practice/schemas v0.0.0-20260202165804-67a445042397
+	github.com/confluentinc/confluent-kafka-go/v2 v2.13.0
 	github.com/gin-gonic/gin v1.11.0
 )
 
@@ -24,7 +24,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jhump/protoreflect v1.15.6 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
