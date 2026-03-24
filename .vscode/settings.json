@@ -13,5 +13,6 @@
     "protoreflect",
     "schemaregistry",
     "serde"
-  ]
+  ],
+  "java.compile.nullAnalysis.mode": "automatic"
 }

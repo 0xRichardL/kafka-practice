@@ -1,0 +1,1 @@
+docker build -t kafka-practice/producer:v1 ./producer

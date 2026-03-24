@@ -59,7 +59,7 @@ services:
       CONNECT_PLUGIN_PATH: "/usr/share/java"
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:latest
+    image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
     ports:
       - "8080:8080"
