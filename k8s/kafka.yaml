@@ -94,9 +94,12 @@ spec:
   selector:
     app: kafka
   ports:
-    - protocol: TCP
+    # `name` is required primarily when a service exposes multiple ports. 
+    - name: broker
+      protocol: TCP
       port: 9092
       targetPort: 9092
-    - protocol: TCP
+    - name: plaintext-host
+      protocol: TCP
       port: 29092
       targetPort: 29092
