@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-connect
+  name: kafka-connect-svc
   namespace: app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-connect
+      app: kafka-connect-svc
   template:
     metadata:
       labels:
-        app: kafka-connect
+        app: kafka-connect-svc
     spec:
       containers:
-        - name: kafka-connect
+        - name: kafka-connect-svc
           image: confluentinc/cp-kafka-connect:7.6.0
           ports:
             - containerPort: 8083
           env:
             - name: CONNECT_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
+              value: "kafka-svc:9092"
             - name: CONNECT_REST_ADVERTISED_HOST_NAME
-              value: "kafka-connect"
+              value: "kafka-connect-svc"
             - name: CONNECT_REST_PORT
               value: "8083"
             - name: CONNECT_GROUP_ID
@@ -44,9 +44,9 @@ spec:
             - name: CONNECT_VALUE_CONVERTER
               value: "io.confluent.connect.protobuf.ProtobufConverter"
             - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
-              value: "http://schema-registry:8081"
+              value: "http://schema-registry-svc:8081"
             - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
-              value: "http://schema-registry:8081"
+              value: "http://schema-registry-svc:8081"
             - name: CONNECT_PLUGIN_PATH
               value: "/usr/share/java"
           resources:
@@ -75,11 +75,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-connect
+  name: kafka-connect-svc
   namespace: app
 spec:
   selector:
-    app: kafka-connect
+    app: kafka-connect-svc
   ports:
     - protocol: TCP
       port: 8083

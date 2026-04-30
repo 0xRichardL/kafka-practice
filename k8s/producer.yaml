@@ -20,9 +20,9 @@ spec:
             - containerPort: 5001
           env:
             - name: SCHEMA_REGISTRY_URL
-              value: "http://schema-registry:8081"
+              value: "http://schema-registry-svc:8081"
             - name: KAFKA_BROKERS
-              value: "kafka:9092"
+              value: "kafka-svc:9092"
           resources:
             requests:
               cpu: 250m

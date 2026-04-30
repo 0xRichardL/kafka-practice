@@ -1,20 +1,21 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: kafka
+  name: kafka-svc
   namespace: app
 spec:
+  serviceName: kafka-svc
   replicas: 1
   selector:
     matchLabels:
-      app: kafka
+      app: kafka-svc
   template:
     metadata:
       labels:
-        app: kafka
+        app: kafka-svc
     spec:
       containers:
-        - name: kafka
+        - name: kafka-svc
           image: confluentinc/cp-kafka:7.6.0
           ports:
             - containerPort: 9092
@@ -23,83 +24,97 @@ spec:
             - name: KAFKA_NODE_ID
               value: "1"
             - name: KAFKA_PROCESS_ROLES
-              value: broker,controller
+              value: "broker,controller"
             - name: KAFKA_CONTROLLER_QUORUM_VOTERS
-              value: "1@kafka:29093"
+              value: "1@kafka-svc-0.kafka-svc:29093"
             - name: KAFKA_LISTENERS
-              value: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:29092
+              value: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:29092"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+              value: "PLAINTEXT://kafka-svc-0.kafka-svc:9092,PLAINTEXT_HOST://kafka-svc:29092"
             - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-              value: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+              value: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT"
             - name: KAFKA_CONTROLLER_LISTENER_NAMES
-              value: CONTROLLER
+              value: "CONTROLLER"
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
-              value: PLAINTEXT
+              value: "PLAINTEXT"
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
             - name: KAFKA_LOG_DIRS
-              value: /tmp/kraft-combined-logs
+              value: "/tmp/kraft-combined-logs"
             - name: CLUSTER_ID
               value: "MkU3OEVBNTcwNTJENDM2Qk"
+
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /tmp/kraft-combined-logs
+
           readinessProbe:
-            tcpSocket:
-              port: 9092
+            exec:
+              command:
+                - sh
+                - -c
+                - kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1
             initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: 6
           livenessProbe:
-            tcpSocket:
-              port: 9092
+            exec:
+              command:
+                - sh
+                - -c
+                - kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1
             initialDelaySeconds: 30
             periodSeconds: 15
             timeoutSeconds: 5
-            failureThreshold: 3
+            failureThreshold: 6
+
           resources:
             requests:
               cpu: 500m
               memory: 1Gi
             limits:
               cpu: 1000m
-              memory: 2Gi
-          volumeMounts:
-            - name: kafka-data
-              mountPath: /tmp/kraft-combined-logs
-      volumes:
-        - name: kafka-data
-          persistentVolumeClaim:
-            claimName: kafka-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: kafka-pvc
-  namespace: app
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 3Gi
+              memory: 3Gi
+
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 4Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka
+  name: kafka-svc
   namespace: app
 spec:
-  type: ClusterIP
+  # Critical for StatefulSet stable DNS:
+  # kafka-svc-0.kafka-svc
+  clusterIP: None
+
   selector:
-    app: kafka
+    app: kafka-svc
+
   ports:
-    # `name` is required primarily when a service exposes multiple ports. 
+    # Internal broker traffic
     - name: broker
       protocol: TCP
       port: 9092
       targetPort: 9092
+
+    # External / host listener (optional, keep only if needed)
     - name: plaintext-host
       protocol: TCP
       port: 29092
       targetPort: 29092
+
+    # Required for KRaft controller quorum
+    - name: controller
+      protocol: TCP
+      port: 29093
+      targetPort: 29093
