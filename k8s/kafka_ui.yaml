@@ -39,12 +39,10 @@ metadata:
   name: kafka-ui
   namespace: app
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: kafka-ui
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      # The range of valid ports is 30000-32767
-      nodePort: 30080

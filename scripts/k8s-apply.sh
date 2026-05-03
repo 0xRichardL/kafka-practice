@@ -8,4 +8,5 @@ kubectl apply -f k8s/schema_registry.yaml
 kubectl apply -f k8s/kafka_connect.yaml
 kubectl apply -f k8s/kafka_ui.yaml
 kubectl apply -f k8s/producer.yaml
+kubectl apply -f k8s/ingress.yaml
 echo "✓ All Kubernetes objects applied successfully"

@@ -51,6 +51,17 @@
 - [ ] Add Dockerfile
 - [ ] Validate alerts are produced correctly
 
+## 5. ☸️ Kubernetes Deployment
+
+- [x] Add `k8s/` manifests for namespace, Kafka, Schema Registry, Kafka Connect, Kafka UI, producer, and ingress
+- [x] Add `scripts/k8s-apply.sh` to deploy manifests in order
+- [x] Add `scripts/k8s-delete.sh` to delete deployed resources
+- [x] Add `docs/k8s.md` with Docker Desktop local setup instructions
+- [x] Define ingress hostnames in `k8s/ingress.yaml`
+- [ ] Add automated NGINX ingress install script
+- [ ] Add Kubernetes manifests for Postgres / Elasticsearch backend storage
+- [x] Validate local host routing for `kafka-ui.k8s.local` and `producer.k8s.local`
+
 ## What This Project Intentionally Does NOT Use
 
 - Kafka Streams (Java)

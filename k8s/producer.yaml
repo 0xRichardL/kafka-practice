@@ -1,28 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: producer
+  name: producer-svc
   namespace: app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: producer
+      app: producer-svc
   template:
     metadata:
       labels:
-        app: producer
+        app: producer-svc
     spec:
       containers:
-        - name: producer
+        - name: producer-svc
           image: kafka-practice/producer:v1
           ports:
             - containerPort: 5001
-          env:
-            - name: SCHEMA_REGISTRY_URL
-              value: "http://schema-registry-svc:8081"
-            - name: KAFKA_BROKERS
-              value: "kafka-svc:9092"
+          envFrom:
+            - configMapRef:
+                name: app-config
           resources:
             requests:
               cpu: 250m
@@ -34,12 +32,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: producer
+  name: producer-svc
   namespace: app
 spec:
   type: ClusterIP
   selector:
-    app: producer
+    app: producer-svc
   ports:
     - protocol: TCP
       port: 5001

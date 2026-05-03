@@ -78,6 +78,7 @@ metadata:
   name: kafka-connect-svc
   namespace: app
 spec:
+  type: ClusterIP
   selector:
     app: kafka-connect-svc
   ports:
