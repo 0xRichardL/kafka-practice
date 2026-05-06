@@ -20,7 +20,10 @@ spec:
             - containerPort: 8083
           env:
             - name: CONNECT_BOOTSTRAP_SERVERS
-              value: "kafka-svc:9092"
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: KAFKA_BROKERS
             - name: CONNECT_REST_ADVERTISED_HOST_NAME
               value: "kafka-connect-svc"
             - name: CONNECT_REST_PORT
@@ -44,9 +47,15 @@ spec:
             - name: CONNECT_VALUE_CONVERTER
               value: "io.confluent.connect.protobuf.ProtobufConverter"
             - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
-              value: "http://schema-registry-svc:8081"
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SCHEMA_REGISTRY_URL
             - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
-              value: "http://schema-registry-svc:8081"
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SCHEMA_REGISTRY_URL
             - name: CONNECT_PLUGIN_PATH
               value: "/usr/share/java"
           resources:

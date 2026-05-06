@@ -8,5 +8,6 @@ kubectl delete -f k8s/kafka_connect.yaml --ignore-not-found
 kubectl delete -f k8s/schema_registry.yaml --ignore-not-found
 kubectl delete -f k8s/kafka.yaml --ignore-not-found
 kubectl delete -f k8s/ingress.yaml --ignore-not-found
+kubectl delete -f k8s/app_config.yaml --ignore-not-found
 kubectl delete -f k8s/namespace.yaml --ignore-not-found
 echo "✓ All Kubernetes resources deleted"
