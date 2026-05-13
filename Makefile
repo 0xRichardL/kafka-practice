@@ -11,7 +11,7 @@ gen-schemas-go:
 # Docker build commands
 build-images:
 	@echo "Building local Docker images..."
-	docker build -t kafka-practice/producer:v1 ./producer
+	@bash scripts/service-images-build.sh
 
 # Kubernetes commands for Docker Desktop
 k8s-apply:

@@ -43,6 +43,7 @@ func (s *TransactionService) Transfer() error {
 		Timestamp:     time.Now().Unix(),
 		Status:        "initialized",
 	}
+	tx.Signature = SignData(tx.UserId, tx.Amount, tx.Merchant, tx.Category, tx.Timestamp)
 	payload, err := s.kafkaService.Serializer.Serialize(s.kafkaTopic, &tx)
 	if err != nil {
 		return fmt.Errorf("failed to serialize: %w", err)

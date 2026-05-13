@@ -1,17 +1,40 @@
-FROM golang:1.25.4 as builder
+# --- Build Stage ---
+FROM golang:1.25.4-bookworm AS builder
 
-WORKDIR /app
+WORKDIR /workspace
 
-COPY . .
+# Install librdkafka dev headers
+RUN apt-get update && apt-get install -y librdkafka-dev pkg-config
 
-RUN go build -o main .
+# Copy required modules
+COPY producer/go.work.override go.work
+COPY go.work.sum go.work.sum
+COPY producer/ producer/
+COPY schemas/ schemas/
+COPY fraud/ fraud/
 
-FROM alpine:latest
+RUN go work sync
 
-WORKDIR /app
+WORKDIR /workspace/producer
 
-RUN apk add --no-cache libc6-compat
+# CGO required
+RUN go build -o /app/main .
+
+# --- Final Stage ---
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y librdkafka1 ca-certificates && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
+WORKDIR /home/appuser/app
 
 COPY --from=builder /app/main .
+
+RUN chown -R appuser:appgroup /home/appuser/app
+
+USER appuser
+
+EXPOSE 8080
 
 CMD ["./main"]

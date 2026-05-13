@@ -3,7 +3,7 @@ module github.com/0xRichardL/kafka-practice/producer
 go 1.25.4
 
 require (
-	github.com/0xRichardL/kafka-practice/schemas v0.0.0-20260202165804-67a445042397
+	github.com/0xRichardL/kafka-practice/schemas v0.0.0-20260503143700-771a7bf18898
 	github.com/confluentinc/confluent-kafka-go/v2 v2.13.0
 	github.com/gin-gonic/gin v1.11.0
 )
